@@ -2,6 +2,7 @@
 #include <param/param_list.h>
 #include <param/param_client.h>
 #include <csp/csp.h>
+#include "../lib/csp/src/csp_rtable_cidr.c"
 
 #define CH_ON_OFF 20
 #define NODE 3
@@ -9,6 +10,10 @@
 #define VERBOSE 0
 
 int main(){
+	csp_iface_t * interface = NULL;
+	
+	initCAN(interface);
+	
 	param_list_download(NODE, 100, CSP_VERSION, 0);
 	param_t * ch = param_list_find_id(NODE, CH_ON_OFF);
 	
@@ -19,5 +24,7 @@ int main(){
 	int error = param_push_single(ch, i, buffer, VERBOSE, NODE, 100, CSP_VERSION);
 	if(error) { printf("Connection timed out.\n");}
 	}
+
+	csp_can_socketcan_stop(interface);
 	return 0;
 }
