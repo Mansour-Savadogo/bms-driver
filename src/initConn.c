@@ -1,6 +1,10 @@
+#include "initConn.h"
+
 #define CAN_BITRATE  1000000
 #define PARAM_LIST_DYNAMIC 1
 #define CSP_HAVE_STDIO 1
+
+int __start_vmem, __stop_vmem;
 
 int initCAN(csp_iface_t * iface){
     if(csp_can_socketcan_open_and_add_interface("can0", CSP_IF_CAN_DEFAULT_NAME, CAN_BITRATE, true, &iface) == CSP_ERR_NONE){return 0;}

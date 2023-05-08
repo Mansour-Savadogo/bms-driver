@@ -3,6 +3,7 @@
 #include <param/param_list.h>
 #include <param/param_client.h>
 #include <csp/csp.h>
+#include <vmem/vmem.h>
 #include "initConn.h"
 
 #define CH_ON_OFF 20
@@ -11,7 +12,7 @@
 #define VERBOSE 0
 
 int main(){
-	csp_iface_t * interface = NULL;
+	csp_iface_t * interface = NULL; int error = 0;
 	
 	//initCAN(interface);
 	initZMQ(interface);
@@ -23,13 +24,13 @@ int main(){
 	
 	for(int i = 0; i < 12; i++){
 	buffer [0] = '0';
-	int error = param_push_single(ch, i, buffer, VERBOSE, NODE, 100, CSP_VERSION);
+	error = param_push_single(ch, i, buffer, VERBOSE, NODE, 100, CSP_VERSION);
 	if(error) { printf("Connection timed out.\n");}
 
 	sleep(1);
 
 	buffer [0] = '1';
-	int error = param_push_single(ch, i, buffer, VERBOSE, NODE, 100, CSP_VERSION);
+	error = param_push_single(ch, i, buffer, VERBOSE, NODE, 100, CSP_VERSION);
 	if(error) { printf("Connection timed out.\n");}
 	}
 
