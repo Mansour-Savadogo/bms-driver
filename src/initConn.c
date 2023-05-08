@@ -14,10 +14,8 @@ int initCAN(csp_iface_t * iface){
 int initZMQ(csp_iface_t * iface){
     uint8_t address = 255;
     static uint8_t server_address = 0;
-    const char * zmq_device = NULL;
+    const char * zmq_host = "ZMQHUB";
     const char * rtable = NULL;
-
-    csp_print("Initialising CSP");
 
     /* Init CSP */
     csp_init();
@@ -26,11 +24,13 @@ int initZMQ(csp_iface_t * iface){
     //ROUTER START IS SPECIFIC TO YOUR ARCHITECTURE
 
     /* Add interface(s) */
-    csp_iface_t * default_iface = iface;
-    int error = csp_zmqhub_init(0, zmq_device, 0, &default_iface);
+    if(iface == NULL){
+        
+    int error = csp_zmqhub_init(address, zmq_host, 8, &iface);
     if (error != CSP_ERR_NONE) {
-        csp_print("failed to add ZMQ interface [%s], error: %d\n", zmq_device, error);
+        csp_print("failed to add ZMQ interface [%s], error: %d\n", zmq_host, error);
             exit(1);
+        }
     }
 
     if (rtable) {
@@ -39,8 +39,8 @@ int initZMQ(csp_iface_t * iface){
             csp_print("csp_rtable_load(%s) failed, error: %d\n", rtable, error);
             exit(1);
         }
-    } else if (default_iface) {
-        csp_rtable_set(0, 0, default_iface, CSP_NO_VIA_ADDRESS);
+    } else if (iface) {
+        csp_rtable_set(0, 0, iface, CSP_NO_VIA_ADDRESS);
     } else {
         /* no interfaces configured - run server and client in process, using loopback interface */
         server_address = address;
@@ -57,12 +57,12 @@ int initZMQ(csp_iface_t * iface){
 
     /* Start server thread */
     if ((server_address == 255) ||  /* no server address specified, I must be server */
-        (default_iface == NULL)) {  /* no interfaces specified -> run server & client via loopback */
+        (iface == NULL)) {  /* no interfaces specified -> run server & client via loopback */
         //server_start();
     }
 
     if ((server_address != 255) ||  /* server address specified, I must be client */
-        (default_iface == NULL)) {  /* no interfaces specified -> run server & client via loopback */
+        (iface == NULL)) {  /* no interfaces specified -> run server & client via loopback */
         //client_start();
     }
     return 0;

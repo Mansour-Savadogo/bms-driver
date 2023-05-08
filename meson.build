@@ -2,7 +2,7 @@ project('SpaceInventorDeviceDriver', 'c', subproject_dir: 'lib', default_options
         'buildtype=debug',
         'c_std=gnu11',
         'param:list_dynamic=true',
-		'csp:have_rtable=true']) #compiler arguments
+	'csp:have_rtable=true']) #compiler arguments
 
 csp_dep = dependency('csp', fallback: ['csp', 'csp_dep'], required: true)
 param_dep = dependency('param', fallback: ['param', 'param_dep'], required: true).as_link_whole()
