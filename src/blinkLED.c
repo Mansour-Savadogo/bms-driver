@@ -14,7 +14,7 @@
 #define TIMEOUT 100
 
 int main(){
-	csp_iface_t * interface = NULL; const char * rtable = NULL;
+	csp_iface_t * interface = NULL;
 	int error = 0;
 
 	//initCAN(interface);

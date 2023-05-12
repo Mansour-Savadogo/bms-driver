@@ -1,6 +1,10 @@
+/*
+Author: Mansour Savadogo
+*/
+
 #include "initConn.h"
 
-#define CAN_BITRATE  1000000
+#define CAN_BITRATE  1000000 //Needs to match hardware config
 #define PARAM_LIST_DYNAMIC 1
 #define CSP_HAVE_STDIO 1
 
@@ -11,7 +15,11 @@ int initCAN(csp_iface_t * iface){
     else {return -1;}
 }
 
+
+
 int initZMQ(csp_iface_t * iface){
+    // I used lib/csp/examples/csp_server_client.c and filled in the blanks.
+
     uint8_t address = 255;
     static uint8_t server_address = 0;
     const char * zmq_host = "ZMQHUB";

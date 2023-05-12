@@ -8,12 +8,16 @@ csp_dep = dependency('csp', fallback: ['csp', 'csp_dep'], required: true)
 param_dep = dependency('param', fallback: ['param', 'param_dep'], required: true).as_link_whole()
 
 SI_test_src = [
-	'src/initConn.c',
-	'src/blinkLED.c',
+	'src/blinkLED.c', 'src/initConn.c',
 	'src/serial.c'
 ]
 
-SI_test = executable('can_test', SI_test_src,
+Embed_test = executable('can_test', ['src/blink_no_list.c', 'src/serial.c'],
+	dependencies : [csp_dep, param_dep],
+        link_args : ['-Wl,-Map=can_test.map', '-lm'],
+        install : false)
+
+SI_test = executable('can_list_test', SI_test_src,
 	dependencies : [csp_dep, param_dep],
     link_args : ['-Wl,-Map=can_test.map', '-lm'],
     install : false)
