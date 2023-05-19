@@ -63,8 +63,6 @@ int main(){
 	*/
 
 	printf("about to stop connection\n");
-	
-    	if(interface){ csp_can_socketcan_stop(interface); }
 
 	return 0;
 }
