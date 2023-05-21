@@ -1,6 +1,6 @@
 #include "eps.h"
 
-initEPS(){
+void initEPS(){
 	//Not sure if we need this chunk
 	struct utsname info;
 	uname(&info);
@@ -13,7 +13,7 @@ initEPS(){
 	
 	// Initialize CAN bus
 	csp_iface_t * interface = csp_can_socketcan_init("can0", CAN_BITRATE, 0);
-	while(interface == NULL) {csp_iface_t * interface = csp_can_socketcan_init("can0", CAN_BITRATE, 0);} //This is not a good way to handle not getting a connection, implement better behavior.
+	while(interface == NULL) {interface = csp_can_socketcan_init("can0", CAN_BITRATE, 0);} //This is not a good way to handle not getting a connection, implement better behavior.
 	
 	csp_rdp_set_opt(3, 10000, 5000, 1, 2000, 2); //idk if we need this line
 	

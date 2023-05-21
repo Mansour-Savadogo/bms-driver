@@ -33,6 +33,8 @@
 #define CAN_BITRATE  1000000
 #define TIMEOUT 100
 
+int __start_vmem, __stop_vmem;
+
 // Now defining parameters. Again, those should never need to change during runtime.
 // Just check that they were set up correctly here. CSH is your friend.
 
@@ -49,7 +51,7 @@ static uint16_t _dfl_off_in[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(237, dfl_of
 
 // TO POWERCYCLE, SET POWERCYCLE PARAMETER TO 123
 
-    initEPS();
+    void initEPS();
 
     //Getters
 	/*
