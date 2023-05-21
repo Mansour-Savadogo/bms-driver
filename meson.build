@@ -12,7 +12,7 @@ SI_test_src = [
 	'src/serial.c'
 ]
 
-Embed_test = executable('can_test', ['src/template.c', 'src/serial.c'],
+Embed_test = executable('can_test', ['src/can_test.c','src/serial.c', 'src/eps.c'],
 	dependencies : [csp_dep, param_dep],
         link_args : ['-Wl,-Map=can_test.map', '-lm'],
         install : false)
