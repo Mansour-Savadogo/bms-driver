@@ -20,24 +20,7 @@ void initEPS(){
 	// I don't think this chunk is needed, but I'm keeping it here just in case
 	srand(time(NULL));
 	void serial_init(void);
-	serial_init(); //*/
-	
-	//90% sure we don't need this
-	/*
-	#if (CSP_HAVE_STDIO)
-	if (rtable && csp_rtable_check(rtable)) {
-		int error = csp_rtable_load(rtable);
-		if (error < 1) {
-			printf("csp_rtable_load(%s) failed, error: %d\n", rtable, error);
-		}
-	}
-	#endif
-	*/
-	//No idea for this one
-	//csp_bind_callback(csp_service_handler, CSP_ANY);
-	//csp_bind_callback(param_serve, PARAM_PORT_SERVER);
-	//param_command_server_init();
-	//param_schedule_server_init();
+	serial_init();
 }
 
 //Setters
