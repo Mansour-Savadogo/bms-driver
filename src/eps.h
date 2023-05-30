@@ -53,14 +53,14 @@ static uint16_t _dfl_off_in[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(237, dfl_of
 
     void initEPS();
 
-    //Getters
-	/*
-    int get_vbatt(int node);
-    int get_temp(int node);
-    //Array getters. Not implemented yet as of 08/24/202
+    //Getters
+    int get_vbatt();
+    int get_temp();
+    int get_pavg(int channel);
+/*
+    //Array getters. Not implemented yet
     int get_ch_ilim(int channel);
     int get_ch_protect(int channel);
-    int get_pavg(int channel);
     int get_pcur(int channel);
     int get_vcur(int channel);
     int get_icur(int channel);
