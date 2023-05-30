@@ -84,6 +84,12 @@ int setWatchdog(int time_ms){
 //Getters//////
 ///////////////
 
+int get_vbatt(){
+	param_pull_single(&vbatt, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
+    return _vbatt;
+    
+	}
+
 //I do not have the telemetry parameters defined yet so I commented out these functions. If you could check the hardware and define them, it would be epic.
 /*
     int get_ch_ilim(int channel){
