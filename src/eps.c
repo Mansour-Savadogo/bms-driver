@@ -1,5 +1,6 @@
 #include "eps.h"
 
+//Utility functions
 void initEPS(){
 	//Not sure if we need this chunk
 	struct utsname info;
@@ -13,7 +14,7 @@ void initEPS(){
 	
 	// Initialize CAN bus
 	csp_iface_t * interface = csp_can_socketcan_init("can0", CAN_BITRATE, 0);
-	while(interface == NULL) {interface = csp_can_socketcan_init("can0", CAN_BITRATE, 0);} //This is not a good way to handle not getting a connection, implement better behavior.
+	//while(interface == NULL) {interface = csp_can_socketcan_init("can0", CAN_BITRATE, 0);} //This is not a good way to handle not getting a connection, implement better behavior.
 	
 	csp_rdp_set_opt(3, 10000, 5000, 1, 2000, 2); //idk if we need this line
 	
@@ -21,6 +22,14 @@ void initEPS(){
 	srand(time(NULL));
 	void serial_init(void);
 	serial_init();
+}
+
+void serial_init(void) {
+    _serial0 = rand();
+}
+
+unsigned long int serial_get(void) {
+    return _serial0;
 }
 
 //Setters
@@ -71,115 +80,41 @@ int set_ch_protect(int channel){
     
 	return 0;
 }
-int setWatchdog(int time_ms){
-	//Naive implementation of a watchdog
-	//The Pi should ideally use this function once every hour or so. Or every whatever unit of time.
-	//If not used after time_ms milliseconds, it will get powercycled.
+int resetWatchdog(int time_ms){
+	//Naive implementation of a watchdog, just call this function over and over
+	//Check if this actually works, I'm not sure it does.
 	turn_off_delay (PI_CHANNEL, time_ms);
 	turn_on_delay (PI_CHANNEL, time_ms + 1000);
 	return 0;
 }
 
-///////////////
-//Getters//////
-///////////////
+/////Getters//////
 
-int get_vbatt(){
+uint16_t get_vbatt(){
 	param_pull_single(&vbatt, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
     return _vbatt;
-    
-	}
-
-int get_pavg(int channel){
-  param_pull_single(&tlm_pavg, channel, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-    return _tlm_pavg[channel];
 }
 
+uint16_t get_temp(){
+	param_pull_single(&temp0, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
+    return _temp0;
+}
 
-//I do not have the telemetry parameters defined yet so I commented out these functions. If you could check the hardware and define them, it would be epic.
-/*
-    int get_ch_ilim(int channel){
-	param_pull_single(&ch_ilim, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
+uint32_t get_pavg(int channel){
+  param_pull_single(&tlm_pavg, -1, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
+  return _tlm_pavg[channel];
+}
+
+uint32_t get_ch_ilim(int channel){
+	param_pull_single(&ch_ilim, -1, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
     return _ch_ilim[channel];
+}
     
-	}
-    
-    int get_ch_protect(int channel){
-    param_pull_single(&ch_ilim, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
+uint8_t get_ch_protect(int channel){
+    param_pull_single(&ch_ilim, -1, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
     return _ch_ilim[channel];
-    }
-    
-    int get_pavg(int channel){
-    param_pull_single(&pavg, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-    return _pavg[channel];
-    }
-    
-    int get_pcur(int channel){
-    param_pull_single(&pcur, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-    return _pcur[channel];
-    }
-    
-    int get_vcur(int channel){
-        int arr;
-		param_pull_single(&ch_ilim, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-		for(int k = 0; k < 12; k++){
-        arr.push_back(_ch_ilim[k]);
-		}
-		return arr;
-    }
-    
-    int get_icur(int channel){
-        int arr;
-		param_pull_single(&ch_ilim, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-		for(int k = 0; k < 12; k++){
-        arr.push_back(_ch_ilim[k]);
-		}
-		return arr;
-    }
-    
-    int get_fault(int channel){
-        int arr;
-		param_pull_single(&ch_ilim, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-		for(int k = 0; k < 12; k++){
-        arr.push_back(_ch_ilim[k]);
-		}
-		return arr;
-    }
-    
-    int get_energy(int channel){
-        int arr;
-		param_pull_single(&ch_ilim, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-		for(int k = 0; k < 12; k++){
-        arr.push_back(_ch_ilim[k]);
-		}
-		return arr;
-    }
-    
-    int get_vmin(int channel){
-        int arr;
-		param_pull_single(&ch_ilim, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-		for(int k = 0; k < 12; k++){
-        arr.push_back(_ch_ilim[k]);
-		}
-		return arr;
-    }
-    
-    int get_vmax(int channel){
-        int arr;
-		param_pull_single(&ch_ilim, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-		for(int k = 0; k < 12; k++){
-        arr.push_back(_ch_ilim[k]);
-		}
-		return arr;
-    }
-    
-    int get_imax(int channel){
-        int arr;
-		param_pull_single(&ch_ilim, 0, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
-		for(int k = 0; k < 12; k++){
-        arr.push_back(_ch_ilim[k]);
-		}
-		return arr;
-    }
-	
-//*/
+}
+uint16_t get_pcur(int channel){
+    param_pull_single(&tlm_pcur, -1, VERBOSE, PCDU, TIMEOUT, CSP_VERSION);
+    return _tlm_pcur[channel];
+}

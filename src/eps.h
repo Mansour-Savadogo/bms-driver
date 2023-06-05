@@ -32,7 +32,9 @@
 #define ARRAY_STEP 0
 #define CAN_BITRATE  1000000
 #define TIMEOUT 100
+#define PARAMID_SERIAL0 31
 
+long int _serial0;
 int __start_vmem, __stop_vmem;
 
 // Now defining parameters. Again, those should never need to change during runtime.
@@ -42,36 +44,36 @@ int __start_vmem, __stop_vmem;
 static uint32_t _tlm_pavg[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(421, tlm_pavg, PCDU, PARAM_TYPE_UINT32, ARRAY_SIZE, ARRAY_STEP, PM_CONF, &_tlm_pavg, "");
 static uint16_t _temp0; PARAM_DEFINE_REMOTE_DYNAMIC(400, temp0, PCDU, PARAM_TYPE_UINT16, 1, ARRAY_STEP, PM_CONF, &_temp0, "");
 static uint16_t _vbatt; PARAM_DEFINE_REMOTE_DYNAMIC(402, vbatt, PCDU, PARAM_TYPE_UINT16, 1, ARRAY_STEP, PM_CONF, &_vbatt, "");
+static uint16_t _tlm_pcur[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(420, tlm_pcur, PCDU, PARAM_TYPE_UINT16, ARRAY_SIZE, ARRAY_STEP, PM_CONF, &_tlm_pcur, "");
 
 //System control parameters
+//Double check the data types, they're on the datasheet
 static uint8_t _ch_on[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(20, ch_on, PCDU, PARAM_TYPE_UINT8, ARRAY_SIZE, ARRAY_STEP, PM_CONF, &_ch_on, "");
 static uint8_t _ch_protect[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(201, ch_protect, PCDU, PARAM_TYPE_UINT8, ARRAY_SIZE, ARRAY_STEP, PM_CONF, &_ch_protect, "");
-static uint16_t _dfl_on_in[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(236, dfl_on_in, PCDU, PARAM_TYPE_UINT16, ARRAY_SIZE, ARRAY_STEP, PM_CONF, &_dfl_on_in, "");
-static uint16_t _dfl_off_in[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(237, dfl_off_in, PCDU, PARAM_TYPE_UINT16, ARRAY_SIZE, ARRAY_STEP, PM_CONF, &_dfl_off_in, "");
+static uint32_t _ch_ilim[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(202, ch_ilim, PCDU, PARAM_TYPE_UINT32, ARRAY_SIZE, ARRAY_STEP, PM_CONF, &_ch_ilim, "");
+//
+static uint32_t _dfl_on_in[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(236, dfl_on_in, PCDU, PARAM_TYPE_UINT32, ARRAY_SIZE, ARRAY_STEP, PM_CONF, &_dfl_on_in, "");
+static uint32_t _dfl_off_in[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(237, dfl_off_in, PCDU, PARAM_TYPE_UINT32, ARRAY_SIZE, ARRAY_STEP, PM_CONF, &_dfl_off_in, "");
+
+
+//Other parameters
+PARAM_DEFINE_STATIC_RAM(PARAMID_SERIAL0, serial0, PARAM_TYPE_INT32, -1, 0, PM_HWREG, NULL, "", &_serial0, NULL);
+
 
 // TO POWERCYCLE, SET POWERCYCLE PARAMETER TO 123
 
     void initEPS();
 
-    //Getters
-    int get_vbatt();
-    int get_temp();
-    int get_pavg(int channel);
-/*
-    //Array getters. Not implemented yet
-    int get_ch_ilim(int channel);
-    int get_ch_protect(int channel);
-    int get_pcur(int channel);
-    int get_vcur(int channel);
-    int get_icur(int channel);
-    int get_fault(int channel);
-    int get_energy(int channel);
-    int get_vmin(int channel);
-    int get_vmax(int channel);
-    int get_imax(int channel);
-	*/
+    //PCDU Getters
+    //These update the local parameter and return its address.
+    uint16_t get_vbatt();
+    uint16_t get_temp();
+    uint32_t get_pavg(int channel); //Average power usage for all 12 channels
+    uint32_t get_ch_ilim(int channel); //Current limit for all 12 channels
+    uint8_t get_ch_protect(int channel); //Voltage limit for all 12 channels
+    uint16_t get_pcur(int channel); //Current power usage for all 12 channels
     
-	//Setters
+	//PCDU Setters
     //Setters return 0 on successful communication
     //Return 1 if unsuccessful
 	//Return 2 if invalid input
@@ -80,14 +82,14 @@ static uint16_t _dfl_off_in[ARRAY_SIZE]; PARAM_DEFINE_REMOTE_DYNAMIC(237, dfl_of
     int turn_off(int channel);
     int turn_on(int channel);
     int set_ch_protect(int channel);
-    int setWatchdog(int time_ms);
+    int resetWatchdog(int time_ms);
 
 //Defining hardware setup for subsystems
 //Again, those should never need to change during runtime
 #define PI_CHANNEL 0
-#define GPS_CHANNEL
-#define CUBEADCS_CHANNEL
-#define HAFX1_CHANNEL
+#define GPS_CHANNEL 1
+#define CUBEADCS_CHANNEL 2
+#define HAFX1_CHANNEL 3
 //define the others
 
 #endif
