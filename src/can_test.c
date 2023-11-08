@@ -1,3 +1,5 @@
+#include "eps.h"
+
 int main(){
     initEPS();
     turn_off(0);
