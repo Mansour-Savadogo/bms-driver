@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2023-11-08T05:27:01Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.6.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "SPI_CAN_Converter"
+        },
+        "Owner": "Mansour Savadogo <savad006@umn.edu>",
+        "Size": {
+            "X": 50.47,
+            "Y": 48.25
+        }
+    }
+}
