@@ -36,6 +36,10 @@
 
 extern int __start_vmem, __stop_vmem;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
     int initEPS(); //0 on success, otherwise 1
 
     //PCDU Getters
@@ -57,6 +61,9 @@ extern int __start_vmem, __stop_vmem;
     int turn_on(int channel);
     int set_ch_protect(int channel);
     int resetWatchdog(int time_ms);
+	#ifdef __cplusplus
+	}
+	#endif
 
 //Defining hardware setup for subsystems
 //Again, those should never need to change during runtime
